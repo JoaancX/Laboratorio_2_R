@@ -43,9 +43,8 @@ flights %>%
 flights %>%
   inner_join(airports, by=c("origin"="faa"))
 
-
 flights %>%
-  inner_join(weather, by.y = "year", by.m ="month", by.d = "day", by.h ="hour", by.o="origin") 
+  inner_join(weather, by=c("year", "month","day","hour","origin"))
 
 ```
 2. Data Manipulation
@@ -68,9 +67,11 @@ flights_selected.
 
 ```{r}
 
- select(year:day)%>%
-flights_selected <- flights%>%
-  select(hour,origin,dest,tailnum,carrier,arr_delay,dep_delay)
+ select(flights,year:day)
+
+
+flights_selected <- select(flights,year:day, hour, origin, dest, tailnum,carrier, arr_delay, dep_delay)
+
 
 
 ```
@@ -104,6 +105,7 @@ precip_delay <-inner_join(flights,weather)%>%
   group_by(precip)%>%
   summarize(delay = mean(dep_delay, na.rm = TRUE))
 
+
 ```
 
 
@@ -129,12 +131,12 @@ asignelo a la variable flights_airports.
 
 
 ```{r}
-fae <- -flights %>%
-  filter(year>2013 || month = 5 || day = 10)%>%
-  group_by(dest) %>%
-  summarize(delay = mean(arr_delay, na.rm = TRUE))
-  
-flights_airports <- inner_join(airports,fae)
+
+flights_airports <- flights %>%
+  filter(year==2013,month==5,day==10)%>%
+  group_by(dest)%>% 
+  summarize(delay=mean(arr_delay,na.rm=T))%>%
+  inner_join(airports, by=c("dest"="faa"))
 
 ```
 
@@ -143,7 +145,7 @@ variable lon y para y la variable lat. Defina el color y el tamaño por medio de
 variable delay. El tamaño se establece por medio del parámetro size.
 
 ```{r}
-ggplot(flights_airports, aes(x=lom, y=lat, color=delay, size=delay)) +
+ggplot(flights_airports,aes(x=lon,y=lat, color=delay,size=delay))+ 
   geom_point()
 
 ```
@@ -157,6 +159,8 @@ dep_delay y arr_delay, yluego divida por air_time. Ejemplo:
 ```{r}
 inner_join(flights,planes,suffix=c("_flights","_planes"))%>%
   transmute(tailnum, manufacturer, pi = (dep_delay+arr_delay)/air_time)
+
+
 
 ```
 
