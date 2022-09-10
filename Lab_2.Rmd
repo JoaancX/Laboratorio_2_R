@@ -134,7 +134,7 @@ fae <- -flights %>%
   group_by(dest) %>%
   summarize(delay = mean(arr_delay, na.rm = TRUE))
   
-flights_airports <- inner_join(airports,fae, by = "delay")
+flights_airports <- inner_join(airports,fae)
 
 ```
 
